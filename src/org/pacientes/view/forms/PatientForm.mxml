@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Form xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:vo="org.pacientes.model.vo.*">
+	
+	<fx:Declarations>
+		<vo:PatientVO id="patient" />
+	</fx:Declarations>
+
+	<s:FormItem label="Nombre">
+		<s:TextInput text="@{patient.name}" />
+	</s:FormItem>
+	<s:FormItem label="Apellidos">
+		<s:TextInput text="@{patient.lastname}" />
+	</s:FormItem>
+	<s:FormItem label="Edad">
+		<s:NumericStepper maximum="100" minimum="1" value="@{patient.age}" />
+	</s:FormItem>
+	<s:FormItem label="Entidad">
+		<s:TextInput text="@{patient.insurance}" />
+	</s:FormItem>
+	<s:FormItem label="Dr">
+		<s:TextInput text="@{patient.doctor}" />
+	</s:FormItem>
+	<s:FormItem label="Otros">
+		<s:TextArea text="@{patient.other}" />
+	</s:FormItem>
+	
+</s:Form>

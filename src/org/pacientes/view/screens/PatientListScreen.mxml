@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:grids="org.pacientes.view.grids.*"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%" height="100%">
+	
+	<fx:Declarations>
+		<s:ArrayCollection id="patients" />
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.pacientes.model.events.PatientEvent;
+			import org.pacientes.model.events.SearchEvent;
+			import org.pacientes.model.vo.PatientVO;
+			
+			import spark.events.GridEvent;
+
+			protected function onSelect(event:GridEvent):void {
+				dispatchEvent(new PatientEvent(PatientEvent.SELECT, event.item as PatientVO));
+			}
+			
+			protected function onSearch(event:FlexEvent):void {
+				dispatchEvent(new SearchEvent(SearchEvent.SEARCH, event.currentTarget.text));
+			}
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:BasicLayout />
+	</s:layout>
+	
+	<s:VGroup width="100%"
+			  height="100%"
+			  horizontalCenter="0"
+			  verticalCenter="0">
+		<s:HGroup width="100%">
+			<s:HGroup width="100%" horizontalAlign="left">
+				<s:Label text="Listado de pacientes" />
+				<s:Spacer width="100%" />
+				<s:TextInput enter="onSearch(event)" />
+			</s:HGroup>
+		</s:HGroup>
+		<grids:PatientsGrid dataProvider="{patients}" doubleClickEnabled="true"
+							gridDoubleClick="onSelect(event)" />
+		<s:TabBar requireSelection="true" dataProvider="{patients}" />
+	</s:VGroup>
+
+</s:Group>

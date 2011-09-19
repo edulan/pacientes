@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:DataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			xmlns:s="library://ns.adobe.com/flex/spark" 
+			xmlns:mx="library://ns.adobe.com/flex/mx"
+			requestedRowCount="4" width="100%">
+
+	<s:columns>
+		<s:ArrayList>
+			<s:GridColumn dataField="name" headerText="Nombre" />
+			<s:GridColumn dataField="lastname" headerText="Apellidos" />
+			<s:GridColumn dataField="insurance" headerText="Entidad" />
+			<s:GridColumn dataField="doctor" headerText="Dr" />
+			<s:GridColumn dataField="lastUpdated" headerText="Actualizado" />
+		</s:ArrayList>
+	</s:columns>
+
+</s:DataGrid>
+

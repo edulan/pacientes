@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Form xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<s:FormItem label="Exploración">
+		<s:TextInput />
+	</s:FormItem>
+	<s:FormItem label="Fecha">
+		<mx:DateField />
+	</s:FormItem>
+	<s:FormItem label="Dr">
+		<s:TextInput />
+	</s:FormItem>
+	<s:FormItem label="Informe">
+		<s:TextArea />
+	</s:FormItem>
+	<s:Button label="Guardar" />
+	
+</s:Form>

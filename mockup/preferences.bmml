@@ -1,0 +1,16 @@
+<mockup version="1.0" skin="sketch" measuredW="962" measuredH="462" mockupW="506" mockupH="472">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="456" y="62" w="506" h="400" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bottomheight>0</bottomheight>
+        <text>Preferencias</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::ButtonBar" x="629" y="104" w="-1" h="-1" measuredW="159" measuredH="29" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <hrefs>%2C%2C</hrefs>
+        <text>Imagen%2C%20Seguridad</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
