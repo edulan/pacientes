@@ -9,6 +9,7 @@ package org.pacientes.model.events
 		public static const SELECT:String = "selectPatientEvent";
 		public static const SAVE:String = "savePatientEvent";
 		public static const EDIT:String = "editPatientEvent";
+		public static const DELETE:String = "deletePatientEvent";
 		public static const CANCEL:String = "cancelPatientEvent";
 		
 		private var _patient:PatientVO

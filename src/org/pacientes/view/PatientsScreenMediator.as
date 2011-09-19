@@ -23,12 +23,14 @@ package org.pacientes.view
 		override public function onRegister():void {
 			patientsScreen.addEventListener(PatientEvent.SELECT, onSelect);
 			patientsScreen.addEventListener(PatientEvent.EDIT, onEdit);
+			patientsScreen.addEventListener(PatientEvent.DELETE, onDelete);
 			patientsScreen.addEventListener(SearchEvent.SEARCH, onSearch);
 		}
 		
 		override public function onRemove():void {
 			patientsScreen.removeEventListener(PatientEvent.SELECT, onSelect);
 			patientsScreen.removeEventListener(PatientEvent.EDIT, onEdit);
+			patientsScreen.removeEventListener(PatientEvent.DELETE, onDelete);
 			patientsScreen.removeEventListener(SearchEvent.SEARCH, onSearch);
 		}
 
@@ -52,6 +54,12 @@ package org.pacientes.view
 					break;
 				case ApplicationFacade.GET_ALL_PATIENTS_FAILED:
 					handleGetAllPatientsFailed();
+					break;
+				case ApplicationFacade.DELETE_PATIENT_SUCCEED:
+					handleDeletePatientSucceed();
+					break;
+				case ApplicationFacade.DELETE_PATIENT_FAILED:
+					handleDeletePatientFailed();
 					break;
 				case ApplicationFacade.SEARCH_PATIENT_SUCCEED:
 					handleSearchPatientSucceed(note.getBody() as ArrayCollection);
@@ -77,6 +85,14 @@ package org.pacientes.view
 			// TODO: Implement
 		}
 		
+		private function handleDeletePatientSucceed():void {
+			// TODO: Implement
+		}
+		
+		private function handleDeletePatientFailed():void {
+			// TODO: Implement
+		}
+		
 		private function handleSearchPatientSucceed(patients:ArrayCollection):void {
 			patientsScreen.patients = patients;
 		}
@@ -94,6 +110,11 @@ package org.pacientes.view
 		private function onEdit(event:PatientEvent):void {
 			event.stopPropagation();
 			sendNotification(ApplicationFacade.VIEW_PATIENT_DIALOG_SCREEN, event.patient);
+		}
+		
+		private function onDelete(event:PatientEvent):void {
+			event.stopPropagation();
+			sendNotification(ApplicationFacade.COMMAND_DELETE_PATIENT, event.patient);
 		}
 		
 		private function onSearch(event:SearchEvent):void {
