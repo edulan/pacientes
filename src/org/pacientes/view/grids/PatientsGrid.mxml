@@ -11,6 +11,8 @@
 			<s:GridColumn dataField="insurance" headerText="Entidad" />
 			<s:GridColumn dataField="doctor" headerText="Dr" />
 			<s:GridColumn dataField="lastUpdated" headerText="Actualizado" />
+			<s:GridColumn headerText="Editar" itemRenderer="org.pacientes.view.renderers.EditPatientItemRenderer" />
+			<s:GridColumn headerText="Eliminar" />
 		</s:ArrayList>
 	</s:columns>
 

@@ -38,6 +38,7 @@ package org.pacientes.view
         override public function listNotificationInterests():Array {
             return [
 						ApplicationFacade.LOGOUT_SUCCEED,
+						ApplicationFacade.VIEW_PATIENT_DIALOG_SCREEN,
 						PatientDialogMediator.CLOSE
 					];
         }
@@ -45,7 +46,10 @@ package org.pacientes.view
         override public function handleNotification(note:INotification):void {
             switch(note.getName()) {
 				case ApplicationFacade.LOGOUT_SUCCEED:
-					sendNotification(ApplicationFacade.VIEW_LOGIN_SCREEN);
+					handleLogoutSucceed();
+					break;
+				case ApplicationFacade.VIEW_PATIENT_DIALOG_SCREEN:
+					handleViewPatientDialog(note.getBody() as PatientVO);
 					break;
 				case PatientDialogMediator.CLOSE:
 					handleClosePatientDialog(note.getBody() as PatientDialog);
@@ -54,6 +58,20 @@ package org.pacientes.view
         }
 
 		/* NOTIFICATION HANDLERS */
+		
+		private function handleLogoutSucceed():void {
+			sendNotification(ApplicationFacade.VIEW_LOGIN_SCREEN);
+		}
+		
+		private function handleViewPatientDialog(patient:PatientVO):void {
+			var patientDialog:PatientDialog =
+				PopUpManager.createPopUp(homeScreen, PatientDialog,  true) as PatientDialog;
+			
+			PopUpManager.centerPopUp(patientDialog);
+			// Register mediator
+			facade.registerMediator(new PatientDialogMediator(patientDialog));
+			sendNotification(PatientDialogMediator.SHOW, patient);
+		}
 		
 		private function handleClosePatientDialog(patientDialog:PatientDialog):void {
 			PopUpManager.removePopUp(patientDialog);
@@ -65,14 +83,7 @@ package org.pacientes.view
 		
 		private function onAdd(event:MenuEvent):void {
 			event.stopPropagation();
-			
-			var patientDialog:PatientDialog =
-				PopUpManager.createPopUp(homeScreen, PatientDialog,  true) as PatientDialog;
-			
-			PopUpManager.centerPopUp(patientDialog);
-			// Register mediator
-			facade.registerMediator(new PatientDialogMediator(patientDialog));
-			sendNotification(PatientDialogMediator.SHOW, new PatientVO());
+			sendNotification(ApplicationFacade.VIEW_PATIENT_DIALOG_SCREEN, new PatientVO());
 		}
 
 		private function onExit(event:MenuEvent):void {

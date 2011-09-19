@@ -17,7 +17,7 @@
 			import org.pacientes.model.events.PatientEvent;
 
 			protected function onSave(event:MouseEvent):void {
-				dispatchEvent(new PatientEvent(PatientEvent.CREATE, patient));
+				dispatchEvent(new PatientEvent(PatientEvent.SAVE, patient));
 			}
 			
 			protected function onClose(event:CloseEvent):void {

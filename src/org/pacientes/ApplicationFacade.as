@@ -16,8 +16,8 @@ package org.pacientes
 		public static const GET_ALL_PATIENTS_FAILED:String = "getAllPatientsFailed";
 		public static const GET_ALL_PATIENT_REPORTS_SUCCEED:String = "getAllPatientReportsSucceed";
 		public static const GET_ALL_PATIENT_REPORTS_FAILED:String = "getAllPatientReportsFailed";
-		public static const CREATE_PATIENT_SUCCEED:String = "createPatientSucceed";
-		public static const CREATE_PATIENT_FAILED:String = "createPatientFailed";
+		public static const SAVE_PATIENT_SUCCEED:String = "savePatientSucceed";
+		public static const SAVE_PATIENT_FAILED:String = "savePatientFailed";
 		public static const SEARCH_PATIENT_SUCCEED:String = "searchPatientSucceed";
 		public static const SEARCH_PATIENT_FAILED:String = "searchPatientFailed";
 		// command
@@ -25,11 +25,12 @@ package org.pacientes
 		public static const COMMAND_LOGOUT:String = "commandLogout";
 		public static const COMMAND_GET_ALL_PATIENTS:String = "commandGetAllPatients";
 		public static const COMMAND_GET_ALL_PATIENT_REPORTS:String = "commandGetAllPatientReports";
-		public static const COMMAND_CREATE_PATIENT:String = "commandCreatePatient";
+		public static const COMMAND_SAVE_PATIENT:String = "commandSavePatient";
 		public static const COMMAND_SEARCH_PATIENT:String = "commandSearchPatient";
 		// views
 		public static const VIEW_LOGIN_SCREEN:String = "viewLoginScreen";
 		public static const VIEW_HOME_SCREEN:String = "viewHomeScreen";
+		public static const VIEW_PATIENT_DIALOG_SCREEN:String = "viewPatientDialogScreen";
 
         public static function getInstance():ApplicationFacade {
             if (!instance) { 
@@ -45,7 +46,7 @@ package org.pacientes
 			registerCommand(COMMAND_LOGOUT, LogoutCommand);
 			registerCommand(COMMAND_GET_ALL_PATIENTS, GetAllPatientsCommand);
 			registerCommand(COMMAND_GET_ALL_PATIENT_REPORTS, GetAllPatientReportsCommand);
-			registerCommand(COMMAND_CREATE_PATIENT, CreatePatientCommand);
+			registerCommand(COMMAND_SAVE_PATIENT, SavePatientCommand);
 			registerCommand(COMMAND_SEARCH_PATIENT, SearchPatientCommand);
         }
 		

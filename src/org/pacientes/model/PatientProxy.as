@@ -56,7 +56,7 @@ package org.pacientes.model
 			sqlStatement.execute();
 		}
 		
-		public function create(patient:PatientVO):void {
+		public function save(patient:PatientVO):void {
 			var sqlStatement:SQLStatement = new SQLStatement();
 			
 			sqlStatement.sqlConnection = _sqlc;
@@ -66,16 +66,30 @@ package org.pacientes.model
 			sqlStatement.parameters[":insurance"] = patient.insurance;
 			sqlStatement.parameters[":doctor"] = patient.doctor;
 			sqlStatement.parameters[":other"] = patient.other;
-			sqlStatement.text = "INSERT INTO patients " +
-				"(name, lastname, age, insurance, doctor, other, lastUpdated) " +
-				"VALUES(:name, :lastname, :age, :insurance, :doctor, :other, (DATETIME('NOW')))";
+			
+			if (!patient.isSaved()) {
+				sqlStatement.text = "INSERT INTO patients " +
+					"(name, lastname, age, insurance, doctor, other, lastUpdated) " +
+					"VALUES(:name, :lastname, :age, :insurance, :doctor, :other, (DATETIME('NOW')))";
+			} else {
+				sqlStatement.parameters[":id"] = patient.id;
+				sqlStatement.text = "UPDATE patients SET " +
+					"name = :name, " +
+					"lastname = :lastname, " +
+					"age = :age, " +
+					"insurance = :insurance, " +
+					"doctor = :doctor, " +
+					"other = :other, " +
+					"lastUpdated = (DATETIME('NOW')) " +
+					"WHERE id = :id";
+			}
 			
 			sqlStatement.addEventListener(SQLEvent.RESULT, function (evt:SQLEvent):void {
 				//patients.addItem(patient);
-				sendNotification(ApplicationFacade.CREATE_PATIENT_SUCCEED);
+				sendNotification(ApplicationFacade.SAVE_PATIENT_SUCCEED);
 			});
 			sqlStatement.addEventListener(SQLErrorEvent.ERROR, function (evt:SQLErrorEvent):void {
-				sendNotification(ApplicationFacade.CREATE_PATIENT_FAILED);
+				sendNotification(ApplicationFacade.SAVE_PATIENT_FAILED);
 			});
 			sqlStatement.execute();
 		}

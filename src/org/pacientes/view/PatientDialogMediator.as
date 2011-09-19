@@ -20,20 +20,20 @@ package org.pacientes.view
 		}
 		
 		override public function onRegister():void {
-			patientDialog.addEventListener(PatientEvent.CREATE, onCreate);
+			patientDialog.addEventListener(PatientEvent.SAVE, onSave);
 			patientDialog.addEventListener(PatientEvent.CANCEL, onCancel);
 		}
 		
 		override public function onRemove():void {
-			patientDialog.removeEventListener(PatientEvent.CREATE, onCreate);
+			patientDialog.removeEventListener(PatientEvent.SAVE, onSave);
 			patientDialog.addEventListener(PatientEvent.CANCEL, onCancel);
 		}
 
         override public function listNotificationInterests():Array {
             return [
 						PatientDialogMediator.SHOW,
-						ApplicationFacade.CREATE_PATIENT_SUCCEED,
-						ApplicationFacade.CREATE_PATIENT_FAILED
+						ApplicationFacade.SAVE_PATIENT_SUCCEED,
+						ApplicationFacade.SAVE_PATIENT_FAILED
 					];
         }
 
@@ -42,10 +42,10 @@ package org.pacientes.view
 				case PatientDialogMediator.SHOW:
 					handleShowPatientDialog(note.getBody() as PatientVO);
 					break;
-				case ApplicationFacade.CREATE_PATIENT_SUCCEED:
+				case ApplicationFacade.SAVE_PATIENT_SUCCEED:
 					handleCreatePatientSucceed();
 					break;
-				case ApplicationFacade.CREATE_PATIENT_FAILED:
+				case ApplicationFacade.SAVE_PATIENT_FAILED:
 					handleCreatePatientFailed();
 					break;
             }
@@ -55,6 +55,7 @@ package org.pacientes.view
 		
 		private function handleShowPatientDialog(patient:PatientVO):void {
 			patientDialog.patient = patient;
+			patientDialog.title = patient.isSaved() ? "Editar paciente" : "Nuevo paciente";
 		}
 		
 		private function handleCreatePatientSucceed():void {
@@ -67,9 +68,9 @@ package org.pacientes.view
 		
 		/* VIEW LISTENERS */
 		
-		private function onCreate(event:PatientEvent):void {
+		private function onSave(event:PatientEvent):void {
 			event.stopPropagation();
-			sendNotification(ApplicationFacade.COMMAND_CREATE_PATIENT, event.patient);
+			sendNotification(ApplicationFacade.COMMAND_SAVE_PATIENT, event.patient);
 		}
 		
 		private function onCancel(event:PatientEvent):void {

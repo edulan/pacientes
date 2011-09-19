@@ -5,12 +5,12 @@ package org.pacientes.controller
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
-	public class CreatePatientCommand extends SimpleCommand
+	public class SavePatientCommand extends SimpleCommand
 	{
 		override public function execute(notification:INotification):void {
 			var patientProxy:PatientProxy = facade.retrieveProxy(PatientProxy.NAME) as PatientProxy;
 
-			patientProxy.create(notification.getBody() as PatientVO);
+			patientProxy.save(notification.getBody() as PatientVO);
 		}
 	}
 }

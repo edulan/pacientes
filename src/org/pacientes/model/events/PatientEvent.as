@@ -7,7 +7,8 @@ package org.pacientes.model.events
 	public class PatientEvent extends Event
 	{
 		public static const SELECT:String = "selectPatientEvent";
-		public static const CREATE:String = "createPatientEvent";
+		public static const SAVE:String = "savePatientEvent";
+		public static const EDIT:String = "editPatientEvent";
 		public static const CANCEL:String = "cancelPatientEvent";
 		
 		private var _patient:PatientVO

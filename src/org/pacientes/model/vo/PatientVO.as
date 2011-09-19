@@ -110,6 +110,10 @@ package org.pacientes.model.vo
 			}
 		}
 		
+		public function isSaved():Boolean {
+			return _id > 0;
+		}
+		
 		override public function toString():String {
 			return name + " " + lastname;
 		}

@@ -22,11 +22,13 @@ package org.pacientes.view
 		
 		override public function onRegister():void {
 			patientsScreen.addEventListener(PatientEvent.SELECT, onSelect);
+			patientsScreen.addEventListener(PatientEvent.EDIT, onEdit);
 			patientsScreen.addEventListener(SearchEvent.SEARCH, onSearch);
 		}
 		
 		override public function onRemove():void {
 			patientsScreen.removeEventListener(PatientEvent.SELECT, onSelect);
+			patientsScreen.removeEventListener(PatientEvent.EDIT, onEdit);
 			patientsScreen.removeEventListener(SearchEvent.SEARCH, onSearch);
 		}
 
@@ -87,7 +89,11 @@ package org.pacientes.view
 		
 		private function onSelect(event:PatientEvent):void {
 			event.stopPropagation();
-			//sendNotification(ApplicationFacade.VIEW_REPORT_SCREEN, event.patient);
+		}
+		
+		private function onEdit(event:PatientEvent):void {
+			event.stopPropagation();
+			sendNotification(ApplicationFacade.VIEW_PATIENT_DIALOG_SCREEN, event.patient);
 		}
 		
 		private function onSearch(event:SearchEvent):void {
