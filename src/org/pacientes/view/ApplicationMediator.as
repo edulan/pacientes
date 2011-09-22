@@ -17,12 +17,13 @@ package org.pacientes.view
 		
 		override public function onRegister():void {
 			app.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE, onStateChange);
+			sendNotification(ApplicationFacade.CONFIGURE);
 		}
 
         override public function listNotificationInterests():Array {
             return [
 						ApplicationFacade.VIEW_LOGIN_SCREEN,
-						ApplicationFacade.VIEW_HOME_SCREEN
+						ApplicationFacade.VIEW_MAIN_SCREEN
 					];
         }
 
@@ -31,7 +32,7 @@ package org.pacientes.view
 				case ApplicationFacade.VIEW_LOGIN_SCREEN:
 					app.currentState = app.loginState.name;
 					break;
-				case ApplicationFacade.VIEW_HOME_SCREEN:
+				case ApplicationFacade.VIEW_MAIN_SCREEN:
 					app.currentState = app.homeState.name;
 					break;
             }
@@ -47,7 +48,7 @@ package org.pacientes.view
 					facade.removeMediator(LoginScreenMediator.NAME);
 					break;
 				case app.homeState.name:
-					facade.removeMediator(HomeScreenMediator.NAME);
+					facade.removeMediator(MainScreenMediator.NAME);
 					break;
 			}
 			// Register a new mediator for next screen
@@ -56,7 +57,7 @@ package org.pacientes.view
 					facade.registerMediator(new LoginScreenMediator(app.loginScreen));
 					break;
 				case app.homeState.name:
-					facade.registerMediator(new HomeScreenMediator(app.homeScreen));
+					facade.registerMediator(new MainScreenMediator(app.homeScreen));
 					break;
 			}
 		}

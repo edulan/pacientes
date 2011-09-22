@@ -26,14 +26,15 @@
 		<s:State id="homeState" name="home" />
 	</s:states>
 	
-	<s:Group width="100%"
-			 height="100%"
-			 horizontalCenter="0"
-			 verticalCenter="0">
-		<screens:LoginScreen id="loginScreen"
-							 includeIn="login"
-							 itemDestructionPolicy="auto" />
-		<screens:HomeScreen id="homeScreen"
+	<s:Group left="0" right="0"
+			 top="0" bottom="0">
+		<screens:LoginScreen id="loginScreen" includeIn="login"
+							 left="0" right="0"
+							 top="0" bottom="0"
+							 itemDestructionPolicy="auto"/>
+		<screens:MainScreen id="homeScreen"
+							left="0" right="0"
+							top="0" bottom="0"
 							includeIn="home"
 							itemDestructionPolicy="auto" />
 	</s:Group>

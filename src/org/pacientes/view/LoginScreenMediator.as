@@ -33,7 +33,7 @@ package org.pacientes.view
         override public function handleNotification(note:INotification):void {
             switch(note.getName()) {
 				case ApplicationFacade.LOGIN_SUCCEED:
-					sendNotification(ApplicationFacade.VIEW_HOME_SCREEN);
+					sendNotification(ApplicationFacade.VIEW_MAIN_SCREEN);
 					break;
             }
         }

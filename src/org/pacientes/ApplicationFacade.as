@@ -7,6 +7,7 @@ package org.pacientes
     {
 		// application
         public static const STARTUP:String = "startup";
+		public static const CONFIGURE:String = "configure";
         public static const SHUTDOWN:String = "shutdown";
 		// notifications
 		public static const LOGIN_SUCCEED:String = "loginSucceed";
@@ -22,6 +23,8 @@ package org.pacientes
 		public static const DELETE_PATIENT_FAILED:String = "deletePatientFailed";
 		public static const SEARCH_PATIENT_SUCCEED:String = "searchPatientSucceed";
 		public static const SEARCH_PATIENT_FAILED:String = "searchPatientFailed";
+		public static const SAVE_REPORT_SUCCEED:String = "saveReportSucceed";
+		public static const SAVE_REPORT_FAILED:String = "saveReportFailed";
 		// command
 		public static const COMMAND_LOGIN:String = "commandLogin";
 		public static const COMMAND_LOGOUT:String = "commandLogout";
@@ -30,10 +33,12 @@ package org.pacientes
 		public static const COMMAND_SAVE_PATIENT:String = "commandSavePatient";
 		public static const COMMAND_DELETE_PATIENT:String = "commandDeletePatient";
 		public static const COMMAND_SEARCH_PATIENT:String = "commandSearchPatient";
+		public static const COMMAND_SAVE_REPORT:String = "commandSaveReport";
 		// views
 		public static const VIEW_LOGIN_SCREEN:String = "viewLoginScreen";
-		public static const VIEW_HOME_SCREEN:String = "viewHomeScreen";
-		public static const VIEW_PATIENT_DIALOG_SCREEN:String = "viewPatientDialogScreen";
+		public static const VIEW_MAIN_SCREEN:String = "viewMainScreen";
+		public static const VIEW_PATIENT_DIALOG:String = "viewPatientDialog";
+		public static const VIEW_PATIENT_SCREEN:String = "viewPatientScreen";
 
         public static function getInstance():ApplicationFacade {
             if (!instance) { 
@@ -45,6 +50,7 @@ package org.pacientes
         override protected function initializeController():void {
             super.initializeController();
             registerCommand(STARTUP, ApplicationStartupCommand);
+			registerCommand(CONFIGURE, ConfigureCommand);
 			registerCommand(COMMAND_LOGIN, LoginCommand);
 			registerCommand(COMMAND_LOGOUT, LogoutCommand);
 			registerCommand(COMMAND_GET_ALL_PATIENTS, GetAllPatientsCommand);
@@ -52,6 +58,7 @@ package org.pacientes
 			registerCommand(COMMAND_SAVE_PATIENT, SavePatientCommand);
 			registerCommand(COMMAND_DELETE_PATIENT, DeletePatientCommand);
 			registerCommand(COMMAND_SEARCH_PATIENT, SearchPatientCommand);
+			registerCommand(COMMAND_SAVE_REPORT, SaveReportCommand);
         }
 		
 		override public function sendNotification(notificationName:String, body:Object=null, type:String=null):void {

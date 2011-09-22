@@ -38,6 +38,36 @@ package org.pacientes.model
 			_sqlc.openAsync(db);	// TODO: Add encryption key
 		}
 		
+		private function onDbOpen(event:SQLEvent):void {
+			var sqlStatement:SQLStatement = new SQLStatement();
+			
+			loadSchema();
+			
+			sqlStatement.sqlConnection = _sqlc;
+			sqlStatement.text = "CREATE TABLE patients (" +
+				"patientId INTEGER PRIMARY KEY AUTOINCREMENT, " +
+				"name TEXT," +
+				"lastname TEXT," +
+				"age INTEGER," +
+				"insurance TEXT," +
+				"doctor TEXT," +
+				"other TEXT," +
+				"lastUpdated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+				")";
+			
+			sqlStatement.addEventListener(SQLEvent.RESULT, function (event:SQLEvent):void {
+				trace(event);
+			});
+			sqlStatement.addEventListener(SQLErrorEvent.ERROR, function (event:SQLErrorEvent):void {
+				trace(event);
+			});
+			sqlStatement.execute();
+		}
+		
+		private function onDbError(evt:SQLErrorEvent):void {
+			// TODO: Implement
+		}
+		
 		public function findAll():void {
 			var sqlStatement:SQLStatement = new SQLStatement();
 			
@@ -83,7 +113,7 @@ package org.pacientes.model
 			var sqlStatement:SQLStatement = new SQLStatement();
 			
 			sqlStatement.sqlConnection = _sqlc;
-			sqlStatement.parameters[":id"] = patient.id;
+			sqlStatement.parameters[":id"] = patient.patientId;
 			sqlStatement.parameters[":name"] = patient.name;
 			sqlStatement.parameters[":lastname"] = patient.lastname;
 			sqlStatement.parameters[":age"] = patient.age;
@@ -115,7 +145,7 @@ package org.pacientes.model
 			var sqlStatement:SQLStatement = new SQLStatement();
 			
 			sqlStatement.sqlConnection = _sqlc;
-			sqlStatement.parameters[":id"] = patient.id;
+			sqlStatement.parameters[":id"] = patient.patientId;
 			sqlStatement.text = "DELETE FROM patients " +
 				"WHERE id = :id";
 			
@@ -159,37 +189,7 @@ package org.pacientes.model
 			});
 			sqlStatement.execute();
 		}
-		
-		private function onDbOpen(event:SQLEvent):void {
-			var sqlStatement:SQLStatement = new SQLStatement();
-			
-			loadSchema();
 
-			sqlStatement.sqlConnection = _sqlc;
-			sqlStatement.text = "CREATE TABLE patients (" +
-				"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-				"name TEXT," +
-				"lastname TEXT," +
-				"age INTEGER," +
-				"insurance TEXT," +
-				"doctor TEXT," +
-				"other TEXT," +
-				"lastUpdated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP" +
-				")";
-			
-			sqlStatement.addEventListener(SQLEvent.RESULT, function (event:SQLEvent):void {
-				trace(event);
-			});
-			sqlStatement.addEventListener(SQLErrorEvent.ERROR, function (event:SQLErrorEvent):void {
-				trace(event);
-			});
-			sqlStatement.execute();
-		}
-		
-		private function onDbError(evt:SQLErrorEvent):void {
-			
-		}
-		
 		private function loadSchema():void {
 			_sqlc.loadSchema(SQLTableSchema, null, DB_NAME, false, new Responder(
 				function (event:SQLSchemaResult):void {

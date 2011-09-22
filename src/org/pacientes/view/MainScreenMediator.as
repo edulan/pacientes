@@ -4,51 +4,50 @@ package org.pacientes.view
 	
 	import org.pacientes.ApplicationFacade;
 	import org.pacientes.model.events.MenuEvent;
+	import org.pacientes.model.events.SearchEvent;
 	import org.pacientes.model.vo.PatientVO;
-	import org.pacientes.view.screens.HomeScreen;
+	import org.pacientes.view.screens.MainScreen;
 	import org.pacientes.view.screens.PatientDialog;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 
-    public class HomeScreenMediator extends Mediator
+    public class MainScreenMediator extends Mediator
     {
         // Cannonical name of the Mediator
-        public static const NAME:String = "HomeScreenMediator";
+        public static const NAME:String = "MainScreenMediator";
 
-        public function HomeScreenMediator(viewComponent:HomeScreen) {
+        public function MainScreenMediator(viewComponent:MainScreen) {
             super(NAME, viewComponent);
 		}
 		
 		override public function onRegister():void {
 			// Setup listeners
-			homeScreen.addEventListener(MenuEvent.ADD, onAdd);
-			homeScreen.addEventListener(MenuEvent.EXIT, onExit);
+			mainScreen.addEventListener(MenuEvent.ADD, onAdd);
+			mainScreen.addEventListener(SearchEvent.SEARCH, onSearch);
 			// Register mediators
-			facade.registerMediator(new PatientsScreenMediator(homeScreen.patientListScreen));
+			facade.registerMediator(new PatientListMediator(mainScreen.patientList));
+			facade.registerMediator(new PatientTabMediator(mainScreen.patientTab));
 		}
 		
 		override public function onRemove():void {
 			// Remove listeners
-			homeScreen.removeEventListener(MenuEvent.ADD, onAdd);
-			homeScreen.removeEventListener(MenuEvent.EXIT, onExit);
+			mainScreen.removeEventListener(MenuEvent.ADD, onAdd);
+			mainScreen.removeEventListener(SearchEvent.SEARCH, onSearch);
 			// Remove mediators
-			facade.removeMediator(PatientsScreenMediator.NAME);
+			facade.removeMediator(PatientListMediator.NAME);
+			facade.removeMediator(PatientTabMediator.NAME);
 		}
 
         override public function listNotificationInterests():Array {
             return [
-						ApplicationFacade.LOGOUT_SUCCEED,
-						ApplicationFacade.VIEW_PATIENT_DIALOG_SCREEN,
+						ApplicationFacade.VIEW_PATIENT_DIALOG,
 						PatientDialogMediator.CLOSE
 					];
         }
 
         override public function handleNotification(note:INotification):void {
             switch(note.getName()) {
-				case ApplicationFacade.LOGOUT_SUCCEED:
-					handleLogoutSucceed();
-					break;
-				case ApplicationFacade.VIEW_PATIENT_DIALOG_SCREEN:
+				case ApplicationFacade.VIEW_PATIENT_DIALOG:
 					handleViewPatientDialog(note.getBody() as PatientVO);
 					break;
 				case PatientDialogMediator.CLOSE:
@@ -58,14 +57,10 @@ package org.pacientes.view
         }
 
 		/* NOTIFICATION HANDLERS */
-		
-		private function handleLogoutSucceed():void {
-			sendNotification(ApplicationFacade.VIEW_LOGIN_SCREEN);
-		}
-		
+
 		private function handleViewPatientDialog(patient:PatientVO):void {
 			var patientDialog:PatientDialog =
-				PopUpManager.createPopUp(homeScreen, PatientDialog,  true) as PatientDialog;
+				PopUpManager.createPopUp(mainScreen, PatientDialog,  true) as PatientDialog;
 			
 			PopUpManager.centerPopUp(patientDialog);
 			// Register mediator
@@ -83,16 +78,16 @@ package org.pacientes.view
 		
 		private function onAdd(event:MenuEvent):void {
 			event.stopPropagation();
-			sendNotification(ApplicationFacade.VIEW_PATIENT_DIALOG_SCREEN, new PatientVO());
-		}
-
-		private function onExit(event:MenuEvent):void {
-			event.stopPropagation();
-			sendNotification(ApplicationFacade.COMMAND_LOGOUT);
+			sendNotification(ApplicationFacade.VIEW_PATIENT_DIALOG, new PatientVO());
 		}
 		
-		protected function get homeScreen():HomeScreen {
-			return viewComponent as HomeScreen
+		private function onSearch(event:SearchEvent):void {
+			event.stopPropagation();
+			sendNotification(ApplicationFacade.COMMAND_SEARCH_PATIENT, event.pattern);
+		}
+		
+		protected function get mainScreen():MainScreen {
+			return viewComponent as MainScreen
 		}
     }
 }

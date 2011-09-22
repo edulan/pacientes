@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:screens="org.pacientes.view.screens.*"
+		 xmlns:vo="org.pacientes.model.vo.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import org.pacientes.model.events.ReportEvent;
+			
+			import spark.events.IndexChangeEvent;
+
+			protected function onAdd(event:MouseEvent):void {
+				dispatchEvent(new ReportEvent(ReportEvent.ADD));
+			}
+			
+			protected function onChange(event:IndexChangeEvent):void {
+				dispatchEvent(new ReportEvent(ReportEvent.SELECT, event.currentTarget.selectedItem));
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<fx:Declarations>
+		<vo:PatientVO id="patient" />
+	</fx:Declarations>
+
+	<s:layout>
+		<s:HorizontalLayout />
+	</s:layout>
+	
+	<s:VGroup width="100%">
+		<s:Label left="0" top="0" text="{patient.name} {patient.lastname}"/>
+		<s:Group width="100%">
+			<s:Button right="0"
+					  label="Añadir informe"
+					  click="onAdd(event)"/>
+		</s:Group>
+		<s:List width="100%"
+				dataProvider="{patient.reports}"
+				labelField="dateCreated"
+				change="onChange(event)" />
+	</s:VGroup>
+	<s:Group width="100%">
+		<screens:ReportScreen id="reportScreen" />
+	</s:Group>
+	
+</s:Group>

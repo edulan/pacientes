@@ -4,39 +4,35 @@ package org.pacientes.view
 	
 	import org.pacientes.ApplicationFacade;
 	import org.pacientes.model.events.PatientEvent;
-	import org.pacientes.model.events.SearchEvent;
-	import org.pacientes.view.screens.PatientListScreen;
+	import org.pacientes.view.screens.PatientList;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 
-    public class PatientsScreenMediator extends Mediator
+    public class PatientListMediator extends Mediator
     {
         // Cannonical name of the Mediator
-        public static const NAME:String = "PatientsScreenMediator";
-		// Notifications
-		public static const SHOW:String = "showPatientsScreen";
+        public static const NAME:String = "PatientListMediator";
 
-        public function PatientsScreenMediator(viewComponent:PatientListScreen) {
+        public function PatientListMediator(viewComponent:PatientList) {
             super(NAME, viewComponent);
 		}
 		
 		override public function onRegister():void {
-			patientsScreen.addEventListener(PatientEvent.SELECT, onSelect);
-			patientsScreen.addEventListener(PatientEvent.EDIT, onEdit);
-			patientsScreen.addEventListener(PatientEvent.DELETE, onDelete);
-			patientsScreen.addEventListener(SearchEvent.SEARCH, onSearch);
+			// Setup listeners
+			patientList.addEventListener(PatientEvent.SELECT, onSelect);
+			patientList.addEventListener(PatientEvent.EDIT, onEdit);
+			patientList.addEventListener(PatientEvent.DELETE, onDelete);
 		}
 		
 		override public function onRemove():void {
-			patientsScreen.removeEventListener(PatientEvent.SELECT, onSelect);
-			patientsScreen.removeEventListener(PatientEvent.EDIT, onEdit);
-			patientsScreen.removeEventListener(PatientEvent.DELETE, onDelete);
-			patientsScreen.removeEventListener(SearchEvent.SEARCH, onSearch);
+			// Remove listeners
+			patientList.removeEventListener(PatientEvent.SELECT, onSelect);
+			patientList.removeEventListener(PatientEvent.EDIT, onEdit);
+			patientList.removeEventListener(PatientEvent.DELETE, onDelete);
 		}
 
         override public function listNotificationInterests():Array {
             return [
-						PatientsScreenMediator.SHOW,
 						ApplicationFacade.GET_ALL_PATIENTS_SUCCEED,
 						ApplicationFacade.GET_ALL_PATIENTS_FAILED,
 						ApplicationFacade.SEARCH_PATIENT_SUCCEED,
@@ -46,9 +42,6 @@ package org.pacientes.view
 
         override public function handleNotification(note:INotification):void {
             switch(note.getName()) {
-				case PatientsScreenMediator.SHOW:
-					handleShowPatientsScreen();
-					break;
 				case ApplicationFacade.GET_ALL_PATIENTS_SUCCEED:
 					handleGetAllPatientsSucceed(note.getBody() as ArrayCollection);
 					break;
@@ -72,13 +65,8 @@ package org.pacientes.view
 		
 		/* NOTIFICATION HANDLERS */
 		
-		private function handleShowPatientsScreen():void {
-			// Retrieve patients list
-			sendNotification(ApplicationFacade.COMMAND_GET_ALL_PATIENTS);
-		}
-		
 		private function handleGetAllPatientsSucceed(patients:ArrayCollection):void {
-			patientsScreen.patients = patients;
+			patientList.patients = patients;
 		}
 		
 		private function handleGetAllPatientsFailed():void {
@@ -94,7 +82,7 @@ package org.pacientes.view
 		}
 		
 		private function handleSearchPatientSucceed(patients:ArrayCollection):void {
-			patientsScreen.patients = patients;
+			patientList.patients = patients;
 		}
 		
 		private function handleSearchPatientFailed():void {
@@ -105,11 +93,12 @@ package org.pacientes.view
 		
 		private function onSelect(event:PatientEvent):void {
 			event.stopPropagation();
+			sendNotification(ApplicationFacade.VIEW_PATIENT_SCREEN, event.patient);
 		}
 		
 		private function onEdit(event:PatientEvent):void {
 			event.stopPropagation();
-			sendNotification(ApplicationFacade.VIEW_PATIENT_DIALOG_SCREEN, event.patient);
+			sendNotification(ApplicationFacade.VIEW_PATIENT_DIALOG, event.patient);
 		}
 		
 		private function onDelete(event:PatientEvent):void {
@@ -117,13 +106,8 @@ package org.pacientes.view
 			sendNotification(ApplicationFacade.COMMAND_DELETE_PATIENT, event.patient);
 		}
 		
-		private function onSearch(event:SearchEvent):void {
-			event.stopPropagation();
-			sendNotification(ApplicationFacade.COMMAND_SEARCH_PATIENT, event.pattern);
-		}
-		
-		protected function get patientsScreen():PatientListScreen {
-			return viewComponent as PatientListScreen
+		protected function get patientList():PatientList {
+			return viewComponent as PatientList
 		}
     }
 }

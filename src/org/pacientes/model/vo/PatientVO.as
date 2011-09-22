@@ -3,9 +3,11 @@ package org.pacientes.model.vo
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
+	import mx.collections.ArrayCollection;
+	
 	public class PatientVO extends EventDispatcher
 	{
-		private var _id:int;
+		private var _patientId:int;
 		private var _name:String;
 		private var _lastname:String;
 		private var _age:int;
@@ -13,16 +15,21 @@ package org.pacientes.model.vo
 		private var _doctor:String;
 		private var _other:String;
 		private var _lastUpdated:Date;
-
-		[Bindable(event="idChange")]
-		public function get id():int {
-			return _id;
+		private var _reports:ArrayCollection;
+		
+		public function PatientVO() {
+			_reports = new ArrayCollection();
 		}
 
-		public function set id(value:int):void {
-			if ( _id !== value) {
-				_id = value;
-				dispatchEvent(new Event("idChange"));
+		[Bindable(event="patientIdChange")]
+		public function get patientId():int {
+			return _patientId;
+		}
+
+		public function set patientId(value:int):void {
+			if ( _patientId !== value) {
+				_patientId = value;
+				dispatchEvent(new Event("patientIdChange"));
 			}
 		}
 
@@ -110,8 +117,13 @@ package org.pacientes.model.vo
 			}
 		}
 		
+		[Bindable(event="reportsChange")]
+		public function get reports():ArrayCollection {
+			return _reports;
+		}
+		
 		public function isSaved():Boolean {
-			return _id > 0;
+			return _patientId > 0;
 		}
 		
 		override public function toString():String {

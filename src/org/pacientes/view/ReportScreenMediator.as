@@ -1,9 +1,6 @@
 package org.pacientes.view
 {	
-	import mx.collections.ArrayCollection;
-	
-	import org.pacientes.ApplicationFacade;
-	import org.pacientes.model.vo.PatientVO;
+	import org.pacientes.model.vo.ReportVO;
 	import org.pacientes.view.screens.ReportScreen;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -29,25 +26,23 @@ package org.pacientes.view
 
         override public function listNotificationInterests():Array {
             return [
-						ReportScreenMediator.SHOW,
-						ApplicationFacade.GET_ALL_PATIENT_REPORTS_SUCCEED,
-						ApplicationFacade.GET_ALL_PATIENT_REPORTS_FAILED
+						ReportScreenMediator.SHOW
 					];
         }
 
         override public function handleNotification(note:INotification):void {
             switch(note.getName()) {
 				case ReportScreenMediator.SHOW:
-					reportScreen.patient = note.getBody() as PatientVO;
-					sendNotification(ApplicationFacade.COMMAND_GET_ALL_PATIENT_REPORTS);
-					break;
-				case ApplicationFacade.GET_ALL_PATIENT_REPORTS_SUCCEED:
-					reportScreen.reports = new ArrayCollection(note.getBody() as Array);
-					break;
-				case ApplicationFacade.GET_ALL_PATIENT_REPORTS_FAILED:
+					handleShowReport(note.getBody() as ReportVO);
 					break;
             }
         }
+		
+		/* NOTIFICATION HANDLERS */
+		
+		private function handleShowReport(report:ReportVO):void {
+			reportScreen.report = report;
+		}
 		
 		/* VIEW LISTENERS */
 		

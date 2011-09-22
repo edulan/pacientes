@@ -3,8 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:forms="org.pacientes.view.forms.*"
 			   xmlns:vo="org.pacientes.model.vo.*"
-			   close="onClose(event)"
-			   width="400" height="500">
+			   close="onClose(event)">
 	
 	<fx:Declarations>
 		<vo:PatientVO id="patient" />

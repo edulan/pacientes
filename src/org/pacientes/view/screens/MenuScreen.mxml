@@ -4,15 +4,18 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			
 			import org.pacientes.model.events.MenuEvent;
+			import org.pacientes.model.events.SearchEvent;
 
 			protected function onAdd(event:MouseEvent):void {
 				dispatchEvent(new MenuEvent(MenuEvent.ADD));
 			}
-
-			protected function onExit(evt:MouseEvent):void {
-				dispatchEvent(new MenuEvent(MenuEvent.EXIT));
-			}			
+			
+			protected function onSearch(event:FlexEvent):void {
+				dispatchEvent(new SearchEvent(SearchEvent.SEARCH, event.currentTarget.text as String));
+			}
 		]]>
 	</fx:Script>
 
@@ -20,6 +23,9 @@
 		<s:VerticalLayout />
 	</s:layout>
 
-	<s:Button label="Añadir paciente" click="onAdd(event)" />
+	<s:Group width="100%">
+		<s:Button left="0" top="0" label="Añadir paciente" click="onAdd(event)"/>
+		<s:TextInput right="0" top="0" enter="onSearch(event)" />
+	</s:Group>
 	
 </s:Group>

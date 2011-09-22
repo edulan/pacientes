@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:screens="org.pacientes.view.screens.*">
+	
+	<fx:Declarations>
+		<s:ArrayCollection id="patients" />
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import org.pacientes.model.events.PatientEvent;
+			import org.pacientes.model.vo.PatientVO;
+			
+			import spark.events.IndexChangeEvent;
+			
+			protected function onChange(event:IndexChangeEvent):void {
+				dispatchEvent(new PatientEvent(PatientEvent.CHANGE, event.currentTarget.selectedItem as PatientVO));
+			}
+		]]>
+	</fx:Script>
+	
+	<s:TabBar left="0" top="0"
+			  dataProvider="{patients}"
+			  requireSelection="true"
+			  change="onChange(event)" />
+	<screens:PatientScreen id="patientScreen"
+						   left="0" right="0"
+						   top="32" bottom="0"/>
+	
+</s:Group>
