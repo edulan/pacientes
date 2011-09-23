@@ -14,6 +14,7 @@ package org.pacientes.model.vo
 		private var _insurance:String;
 		private var _doctor:String;
 		private var _other:String;
+		private var _dateCreated:Date;
 		private var _lastUpdated:Date;
 		private var _reports:ArrayCollection;
 		
@@ -104,6 +105,18 @@ package org.pacientes.model.vo
 				dispatchEvent(new Event("otherChange"));
 			}
 		}
+		
+		[Bindable(event="dateCreatedChange")]
+		public function get dateCreated():Date {
+			return _dateCreated;
+		}
+		
+		public function set dateCreated(value:Date):void {
+			if( _dateCreated !== value) {
+				_dateCreated = value;
+				dispatchEvent(new Event("dateCreatedChange"));
+			}
+		}
 
 		[Bindable(event="lastUpdatedChange")]
 		public function get lastUpdated():Date {
@@ -122,12 +135,15 @@ package org.pacientes.model.vo
 			return _reports;
 		}
 		
-		public function isSaved():Boolean {
-			return _patientId > 0;
+		public function set reports(value:ArrayCollection):void {
+			if( _reports !== value) {
+				_reports = value;
+				dispatchEvent(new Event("reportsChange"));
+			}
 		}
 		
-		override public function toString():String {
-			return name + " " + lastname;
+		public function isSaved():Boolean {
+			return _patientId > 0;
 		}
 	}
 }

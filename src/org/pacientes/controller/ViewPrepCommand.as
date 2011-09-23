@@ -9,7 +9,6 @@ package org.pacientes.controller
     {
         override public function execute(note:INotification):void {
             facade.registerMediator(new ApplicationMediator(note.getBody() as Pacientes));
-			facade.sendNotification(ApplicationFacade.VIEW_LOGIN_SCREEN);
         }
     }
 }

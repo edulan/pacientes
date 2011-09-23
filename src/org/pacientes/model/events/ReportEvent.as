@@ -8,6 +8,8 @@ package org.pacientes.model.events
 	{
 		public static const ADD:String = "addReportEvent";
 		public static const SELECT:String = "selectReportEvent";
+		public static const SAVE:String = "saveReportEvent";
+		public static const DELETE:String = "deleteReportEvent";
 		
 		private var _report:ReportVO;
 		

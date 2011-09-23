@@ -14,7 +14,7 @@ package org.pacientes.controller
 			if (!report.isSaved()) {
 				reportProxy.create(report);
 			} else {
-				//reportProxy.update(report);
+				reportProxy.update(report);
 			}
 		}
 	}

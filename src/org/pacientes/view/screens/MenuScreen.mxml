@@ -25,7 +25,7 @@
 
 	<s:Group width="100%">
 		<s:Button left="0" top="0" label="Añadir paciente" click="onAdd(event)"/>
-		<s:TextInput right="0" top="0" enter="onSearch(event)" />
+		<s:TextInput right="0" top="0" prompt="Buscar" enter="onSearch(event)" />
 	</s:Group>
 	
 </s:Group>

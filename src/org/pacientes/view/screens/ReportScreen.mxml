@@ -3,10 +3,25 @@
 					xmlns:s="library://ns.adobe.com/flex/spark"
 					xmlns:forms="org.pacientes.view.forms.*"
 					xmlns:vo="org.pacientes.model.vo.*">
-	
+
 	<fx:Declarations>
 		<vo:ReportVO id="report" />
 	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.pacientes.model.events.ImageEvent;
+			import org.pacientes.model.events.ReportEvent;
+
+			protected function onSave(event:MouseEvent):void {
+				dispatchEvent(new ReportEvent(ReportEvent.SAVE, report));
+			}
+			
+			protected function onAttach(event:MouseEvent):void {
+				dispatchEvent(new ImageEvent(ImageEvent.ATTACH));
+			}
+		]]>
+	</fx:Script>
 	
 	<s:layout>
 		<s:VerticalLayout />
@@ -14,5 +29,26 @@
 	
 	<s:Label text="Informe con fecha " />
 	<forms:ReportForm report="{report}" />
+	<s:Group width="100%" height="120">
+		<s:List dataProvider="{report.images}"
+				itemRenderer="org.pacientes.view.renderers.ImageListItemRenderer">
+			<s:layout>
+				<s:TileLayout horizontalAlign="center"
+							  verticalAlign="middle"
+							  orientation="columns"
+							  requestedRowCount="1"
+							  requestedColumnCount="4" />
+			</s:layout>
+		</s:List>
+	</s:Group>
+	<s:Group width="100%">
+		<s:HGroup left="0" top="0">
+			<s:Button label="Adjuntar" click="onAttach(event)" />
+		</s:HGroup>
+		<s:HGroup right="0" top="0" horizontalAlign="right">
+			<s:Button label="Imprimir" />		
+			<s:Button label="Guardar" click="onSave(event)" />
+		</s:HGroup>
+	</s:Group>
 
 </s:Group>

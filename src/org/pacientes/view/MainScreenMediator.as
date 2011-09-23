@@ -15,6 +15,8 @@ package org.pacientes.view
     {
         // Cannonical name of the Mediator
         public static const NAME:String = "MainScreenMediator";
+		// Notifications
+		public static const SHOW:String = "showMainScreen";
 
         public function MainScreenMediator(viewComponent:MainScreen) {
             super(NAME, viewComponent);

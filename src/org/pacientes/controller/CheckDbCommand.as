@@ -4,12 +4,12 @@ package org.pacientes.controller
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
-	public class SetupDbCommand extends SimpleCommand
+	public class CheckDbCommand extends SimpleCommand
 	{
 		override public function execute(notification:INotification):void {
 			var settingsProxy:SettingsProxy = facade.retrieveProxy(SettingsProxy.NAME) as SettingsProxy;
 			
-			settingsProxy.openDatabase();
+			settingsProxy.checkDatabase();
 		}
 		
 	}

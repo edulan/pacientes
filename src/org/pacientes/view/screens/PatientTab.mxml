@@ -17,12 +17,17 @@
 			protected function onChange(event:IndexChangeEvent):void {
 				dispatchEvent(new PatientEvent(PatientEvent.CHANGE, event.currentTarget.selectedItem as PatientVO));
 			}
+			
+			private function patientToLabel(patient:PatientVO):String {
+				return patient.name + ", " + patient.lastname;
+			}
 		]]>
 	</fx:Script>
 	
 	<s:TabBar left="0" top="0"
 			  dataProvider="{patients}"
 			  requireSelection="true"
+			  labelFunction="patientToLabel"
 			  change="onChange(event)" />
 	<screens:PatientScreen id="patientScreen"
 						   left="0" right="0"

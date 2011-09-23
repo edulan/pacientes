@@ -7,9 +7,8 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
-			
 			import org.pacientes.model.events.ReportEvent;
+			import org.pacientes.model.vo.ReportVO;
 			
 			import spark.events.IndexChangeEvent;
 
@@ -21,6 +20,9 @@
 				dispatchEvent(new ReportEvent(ReportEvent.SELECT, event.currentTarget.selectedItem));
 			}
 			
+			private function reportToLabel(report:ReportVO):String {
+				return "Informe con fecha " + report.dateCreated;
+			}
 		]]>
 	</fx:Script>
 	
@@ -42,7 +44,8 @@
 		</s:Group>
 		<s:List width="100%"
 				dataProvider="{patient.reports}"
-				labelField="dateCreated"
+				labelFunction="reportToLabel"
+				itemRenderer="org.pacientes.view.renderers.ReportListItemRenderer"
 				change="onChange(event)" />
 	</s:VGroup>
 	<s:Group width="100%">

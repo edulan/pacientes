@@ -31,11 +31,10 @@
 		<screens:LoginScreen id="loginScreen" includeIn="login"
 							 left="0" right="0"
 							 top="0" bottom="0"
-							 itemDestructionPolicy="auto"/>
-		<screens:MainScreen id="homeScreen"
+							 itemDestructionPolicy="auto" />
+		<screens:MainScreen id="homeScreen" includeIn="home"
 							left="0" right="0"
 							top="0" bottom="0"
-							includeIn="home"
 							itemDestructionPolicy="auto" />
 	</s:Group>
 	

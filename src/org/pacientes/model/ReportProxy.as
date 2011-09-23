@@ -1,10 +1,10 @@
 package org.pacientes.model
 {
-	import flash.data.SQLConnection;
 	import flash.data.SQLStatement;
 	import flash.events.SQLErrorEvent;
 	import flash.events.SQLEvent;
-	import flash.filesystem.File;
+	
+	import mx.collections.ArrayCollection;
 	
 	import org.pacientes.ApplicationFacade;
 	import org.pacientes.model.vo.ReportVO;
@@ -14,59 +14,40 @@ package org.pacientes.model
 	{
 		public static const NAME:String = "ReportProxy";
 		
-		private static const DB_FILE:String = "pacientes.db";
-		private static const DB_NAME:String = "main";
-		
-		private var _sqlc:SQLConnection;
+		private var _loginProxy:LoginProxy;
 		
 		public function ReportProxy(proxyName:String=null, data:Object=null) {
 			super(NAME, data);
 		}
 		
 		override public function onRegister():void {
-			var db:File = File.applicationStorageDirectory.resolvePath(DB_FILE);
-			
-			_sqlc = new SQLConnection();
-			_sqlc.addEventListener(SQLEvent.OPEN, onDbOpen);
-			_sqlc.addEventListener(SQLErrorEvent.ERROR, onDbError);
-			_sqlc.openAsync(db);	// TODO: Add encryption key
+			_loginProxy = facade.retrieveProxy(LoginProxy.NAME) as LoginProxy;
 		}
-		
-		private function onDbOpen(event:SQLEvent):void {
-			var sqlStatement:SQLStatement = new SQLStatement();
 
-			sqlStatement.sqlConnection = _sqlc;
-			sqlStatement.text = "CREATE TABLE reports (" +
-				"reportId INTEGER PRIMARY KEY AUTOINCREMENT, " +
-				"patientId INTEGER NOT NULL, " +
-				"exploration TEXT," +
-				"body TEXT," +
-				"dateCreated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-				"lastUpdated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-				"FOREIGN KEY(patientId) REFERENCES patients(patientId)" +
-				")";
+		public function findAll(patientId:int):void {
+			var sqlStatement:SQLStatement = new SQLStatement();
 			
-			sqlStatement.addEventListener(SQLEvent.RESULT, function (event:SQLEvent):void {
-				trace(event);
+			sqlStatement.sqlConnection = _loginProxy.dbConnection;
+			sqlStatement.itemClass = ReportVO;
+			sqlStatement.parameters[":patientId"] = patientId;
+			sqlStatement.text = "SELECT * FROM reports " +
+				"WHERE patientId = :patientId";
+			
+			sqlStatement.addEventListener(SQLEvent.RESULT, function (evt:SQLEvent):void {
+				data = new ArrayCollection(sqlStatement.getResult().data);
+				sendNotification(ApplicationFacade.GET_ALL_PATIENT_REPORTS_SUCCEED, reports);
 			});
-			sqlStatement.addEventListener(SQLErrorEvent.ERROR, function (event:SQLErrorEvent):void {
-				trace(event);
+			sqlStatement.addEventListener(SQLErrorEvent.ERROR, function (evt:SQLErrorEvent):void {
+				data = null;
+				sendNotification(ApplicationFacade.GET_ALL_PATIENT_REPORTS_FAILED);
 			});
 			sqlStatement.execute();
-		}
-		
-		private function onDbError(evt:SQLErrorEvent):void {
-			// TODO: Implement
-		}
-		
-		public function findAll(patientId:int):void {
-
 		}
 		
 		public function create(report:ReportVO):void {
 			var sqlStatement:SQLStatement = new SQLStatement();
 			
-			sqlStatement.sqlConnection = _sqlc;
+			sqlStatement.sqlConnection = _loginProxy.dbConnection;
 			sqlStatement.parameters[":patientId"] = report.patientId;
 			sqlStatement.parameters[":exploration"] = report.exploration;
 			sqlStatement.parameters[":body"] = report.body;
@@ -75,12 +56,67 @@ package org.pacientes.model
 				"VALUES(:patientId, :exploration, :body, (DATETIME('NOW')), (DATETIME('NOW')))";
 			
 			sqlStatement.addEventListener(SQLEvent.RESULT, function (evt:SQLEvent):void {
+				var lastInsertRowID:int = sqlStatement.getResult().lastInsertRowID;
+				
+				report.reportId = lastInsertRowID;
 				sendNotification(ApplicationFacade.SAVE_REPORT_SUCCEED);
 			});
 			sqlStatement.addEventListener(SQLErrorEvent.ERROR, function (evt:SQLErrorEvent):void {
 				sendNotification(ApplicationFacade.SAVE_REPORT_FAILED);
 			});
 			sqlStatement.execute();
+		}
+		
+		public function update(report:ReportVO):void {
+			var sqlStatement:SQLStatement = new SQLStatement();
+			
+			sqlStatement.sqlConnection = _loginProxy.dbConnection;
+			sqlStatement.parameters[":reportId"] = report.reportId;
+			sqlStatement.parameters[":exploration"] = report.exploration;
+			sqlStatement.parameters[":body"] = report.body;
+			sqlStatement.parameters[":dateCreated"] = report.dateCreated;
+			sqlStatement.text = "UPDATE reports SET " +
+				"exploration = :exploration, " +
+				"body = :body, " +
+				"dateCreated = :dateCreated, " +
+				"lastUpdated = (DATETIME('NOW')) " +
+				"WHERE reportId = :reportId";
+			
+			sqlStatement.addEventListener(SQLEvent.RESULT, function (evt:SQLEvent):void {
+				// TODO: Reload object from database
+				reports.itemUpdated(report);
+				sendNotification(ApplicationFacade.SAVE_REPORT_SUCCEED);
+			});
+			sqlStatement.addEventListener(SQLErrorEvent.ERROR, function (evt:SQLErrorEvent):void {
+				sendNotification(ApplicationFacade.SAVE_REPORT_FAILED);
+			});
+			sqlStatement.execute();
+		}
+		
+		public function destroy(report:ReportVO):void {
+			var sqlStatement:SQLStatement = new SQLStatement();
+			
+			sqlStatement.sqlConnection = _loginProxy.dbConnection;
+			sqlStatement.parameters[":reportId"] = report.reportId;
+			sqlStatement.text = "DELETE FROM reports " +
+				"WHERE reportId = :reportId";
+			
+			sqlStatement.addEventListener(SQLEvent.RESULT, function (evt:SQLEvent):void {
+				var reportIndex:int = reports.getItemIndex(report);
+				
+				if (reportIndex != -1) {
+					reports.removeItemAt(reportIndex);
+				}
+				sendNotification(ApplicationFacade.DELETE_REPORT_SUCCEED, reports);
+			});
+			sqlStatement.addEventListener(SQLErrorEvent.ERROR, function (evt:SQLErrorEvent):void {
+				sendNotification(ApplicationFacade.DELETE_REPORT_FAILED);
+			});
+			sqlStatement.execute();
+		}
+		
+		protected function get reports():ArrayCollection {
+			return data as ArrayCollection;
 		}
 	}
 }

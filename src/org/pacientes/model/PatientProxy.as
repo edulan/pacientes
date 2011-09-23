@@ -1,14 +1,8 @@
 package org.pacientes.model
 {
-	import flash.data.SQLConnection;
-	import flash.data.SQLSchemaResult;
 	import flash.data.SQLStatement;
-	import flash.data.SQLTableSchema;
-	import flash.errors.SQLError;
 	import flash.events.SQLErrorEvent;
 	import flash.events.SQLEvent;
-	import flash.filesystem.File;
-	import flash.net.Responder;
 	
 	import mx.collections.ArrayCollection;
 	
@@ -19,59 +13,21 @@ package org.pacientes.model
 	public class PatientProxy extends Proxy
 	{
 		public static const NAME:String = "PatientProxy";
-		
-		private static const DB_FILE:String = "pacientes.db";
-		private static const DB_NAME:String = "main";
-		
-		private var _sqlc:SQLConnection;
+
+		private var _loginProxy:LoginProxy;
 		
 		public function PatientProxy(proxyName:String=null, data:Object=null) {
 			super(NAME, data);
 		}
 		
 		override public function onRegister():void {
-			var db:File = File.applicationStorageDirectory.resolvePath(DB_FILE);
-			
-			_sqlc = new SQLConnection();
-			_sqlc.addEventListener(SQLEvent.OPEN, onDbOpen);
-			_sqlc.addEventListener(SQLErrorEvent.ERROR, onDbError);
-			_sqlc.openAsync(db);	// TODO: Add encryption key
+			_loginProxy = facade.retrieveProxy(LoginProxy.NAME) as LoginProxy;
 		}
-		
-		private function onDbOpen(event:SQLEvent):void {
-			var sqlStatement:SQLStatement = new SQLStatement();
-			
-			loadSchema();
-			
-			sqlStatement.sqlConnection = _sqlc;
-			sqlStatement.text = "CREATE TABLE patients (" +
-				"patientId INTEGER PRIMARY KEY AUTOINCREMENT, " +
-				"name TEXT," +
-				"lastname TEXT," +
-				"age INTEGER," +
-				"insurance TEXT," +
-				"doctor TEXT," +
-				"other TEXT," +
-				"lastUpdated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP" +
-				")";
-			
-			sqlStatement.addEventListener(SQLEvent.RESULT, function (event:SQLEvent):void {
-				trace(event);
-			});
-			sqlStatement.addEventListener(SQLErrorEvent.ERROR, function (event:SQLErrorEvent):void {
-				trace(event);
-			});
-			sqlStatement.execute();
-		}
-		
-		private function onDbError(evt:SQLErrorEvent):void {
-			// TODO: Implement
-		}
-		
+
 		public function findAll():void {
 			var sqlStatement:SQLStatement = new SQLStatement();
 			
-			sqlStatement.sqlConnection = _sqlc;
+			sqlStatement.sqlConnection = _loginProxy.dbConnection;
 			sqlStatement.itemClass = PatientVO;
 			sqlStatement.text = "SELECT * FROM patients";
 			
@@ -89,7 +45,7 @@ package org.pacientes.model
 		public function create(patient:PatientVO):void {
 			var sqlStatement:SQLStatement = new SQLStatement();
 			
-			sqlStatement.sqlConnection = _sqlc;
+			sqlStatement.sqlConnection = _loginProxy.dbConnection;
 			sqlStatement.parameters[":name"] = patient.name;
 			sqlStatement.parameters[":lastname"] = patient.lastname;
 			sqlStatement.parameters[":age"] = patient.age;
@@ -112,8 +68,8 @@ package org.pacientes.model
 		public function update(patient:PatientVO):void {
 			var sqlStatement:SQLStatement = new SQLStatement();
 			
-			sqlStatement.sqlConnection = _sqlc;
-			sqlStatement.parameters[":id"] = patient.patientId;
+			sqlStatement.sqlConnection = _loginProxy.dbConnection;
+			sqlStatement.parameters[":patientId"] = patient.patientId;
 			sqlStatement.parameters[":name"] = patient.name;
 			sqlStatement.parameters[":lastname"] = patient.lastname;
 			sqlStatement.parameters[":age"] = patient.age;
@@ -128,7 +84,7 @@ package org.pacientes.model
 				"doctor = :doctor, " +
 				"other = :other, " +
 				"lastUpdated = (DATETIME('NOW')) " +
-				"WHERE id = :id";
+				"WHERE patientId = :patientId";
 			
 			sqlStatement.addEventListener(SQLEvent.RESULT, function (evt:SQLEvent):void {
 				// TODO: Reload object from database
@@ -144,10 +100,10 @@ package org.pacientes.model
 		public function destroy(patient:PatientVO):void {
 			var sqlStatement:SQLStatement = new SQLStatement();
 			
-			sqlStatement.sqlConnection = _sqlc;
-			sqlStatement.parameters[":id"] = patient.patientId;
+			sqlStatement.sqlConnection = _loginProxy.dbConnection;
+			sqlStatement.parameters[":patientId"] = patient.patientId;
 			sqlStatement.text = "DELETE FROM patients " +
-				"WHERE id = :id";
+				"WHERE patientId = :patientId";
 			
 			sqlStatement.addEventListener(SQLEvent.RESULT, function (evt:SQLEvent):void {
 				var patientIndex:int = patients.getItemIndex(patient);
@@ -166,7 +122,7 @@ package org.pacientes.model
 		public function search(pattern:String):void {
 			var sqlStatement:SQLStatement = new SQLStatement();
 			
-			sqlStatement.sqlConnection = _sqlc;
+			sqlStatement.sqlConnection = _loginProxy.dbConnection;
 			sqlStatement.itemClass = PatientVO;
 			//sqlStatement.parameters[":name"] = pattern;
 			// TODO: Find how to escape parameters when using '%' symbol
@@ -190,19 +146,6 @@ package org.pacientes.model
 			sqlStatement.execute();
 		}
 
-		private function loadSchema():void {
-			_sqlc.loadSchema(SQLTableSchema, null, DB_NAME, false, new Responder(
-				function (event:SQLSchemaResult):void {
-					for each (var table:SQLTableSchema in event.tables) {
-						trace(table.name);
-					}
-				},
-				function (event:SQLError):void {
-					trace(event);
-				}
-			));
-		}
-		
 		protected function get patients():ArrayCollection {
 			return data as ArrayCollection;
 		}

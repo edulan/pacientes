@@ -2,6 +2,8 @@ package org.pacientes.model.vo
 {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	
+	import mx.collections.ArrayCollection;
 
 	public class ReportVO extends EventDispatcher
 	{
@@ -11,6 +13,11 @@ package org.pacientes.model.vo
 		private var _body:String;
 		private var _dateCreated:Date;
 		private var _lastUpdated:Date;
+		private var _images:ArrayCollection;
+		
+		public function ReportVO() {
+			_images = new ArrayCollection();
+		}
 
 		[Bindable(event="reportIdChange")]
 		public function get reportId():int {
@@ -86,6 +93,18 @@ package org.pacientes.model.vo
 		
 		public function isSaved():Boolean {
 			return _reportId > 0;
+		}
+
+		[Bindable(event="imagesChange")]
+		public function get images():ArrayCollection {
+			return _images;
+		}
+
+		public function set images(value:ArrayCollection):void {
+			if( _images !== value) {
+				_images = value;
+				dispatchEvent(new Event("imagesChange"));
+			}
 		}
 	}
 }

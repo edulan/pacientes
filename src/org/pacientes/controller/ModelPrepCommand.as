@@ -1,5 +1,6 @@
 package org.pacientes.controller
 {	
+	import org.pacientes.model.ImageProxy;
 	import org.pacientes.model.LoginProxy;
 	import org.pacientes.model.PatientProxy;
 	import org.pacientes.model.ReportProxy;
@@ -11,10 +12,11 @@ package org.pacientes.controller
 	{
         override public function execute(note:INotification):void {
 			// Register proxies
-			//facade.registerProxy(new LoginProxy());
-			//facade.registerProxy(new PatientProxy());
-			//facade.registerProxy(new ReportProxy());
 			facade.registerProxy(new SettingsProxy());
+			facade.registerProxy(new LoginProxy());
+			facade.registerProxy(new PatientProxy());
+			facade.registerProxy(new ReportProxy());
+			facade.registerProxy(new ImageProxy());
         }
     }
 }
